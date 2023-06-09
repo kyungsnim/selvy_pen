@@ -1,7 +1,6 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:selvy_pen/pen_input.dart';
 
 void main() => runApp(MyApp());
 
@@ -26,7 +25,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   static const MethodChannel _channel =
-  const MethodChannel('com.seed.selvy_pen');
+  MethodChannel('com.seed.selvy_pen');
 
   String _platformVersion = 'Unknown';
   int status = 9999;
@@ -70,6 +69,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(_platformVersion),
             Text('status : $status'),
+            PenInput(
+              answerCount: 1,
+              onAnswerChanged: (newValue){}, //(newValue) => saveShortAnswer(newValue),
+              memberAnswer: "",
+            ),
           ],
         ),
       ),
