@@ -1,10 +1,7 @@
 package com.seed.selvy_pen;
-
+import com.selvy.spmath.DHWR;
 import android.os.Build;
-
 import androidx.annotation.NonNull;
-
-//import com.seed.selvy_pen.DHWR;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -26,9 +23,10 @@ public class MainActivity extends FlutterActivity {
         if (methodCall.method.equals("getPlatformVersion")) {
             result.success("Android Version: " + Build.VERSION.RELEASE);
         } else if (methodCall.method.equals("create")) {
-            final String filesPath = getFilesDir().getAbsolutePath();
-
-            int status = DHWR.Create(filesPath + "/license_key/" + "license.key");
+            final String filesPath = getContext().getFilesDir().getAbsolutePath();
+            android.util.Log.d("TAG", "filesPath = "+filesPath);
+            int status = DHWR.Create(filesPath + "/" + "license.key");
+            DHWR.SetExternalResourcePath(filesPath.toCharArray());
             result.success(status);
         } else {
             result.notImplemented();

@@ -53,7 +53,8 @@
  *  손글씨로 필기한 수식의 좌표 값을 입력으로 받아 LaTeX으로 인식한 후 그 결과를 로그로 출력하도록 구현한 소스이다.
  */
 
-package com.seed.selvy_pen;
+package com.selvy.spmath;
+
 import android.util.Log;
 import java.util.ArrayList;
 
