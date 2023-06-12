@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:selvy_pen/pen_input.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+import 'package:video_player/video_player.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,6 +25,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late VideoPlayerController _videoPlayerController;
+  String videoURL = "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4";
+
   static const MethodChannel _channel = MethodChannel('com.seed.selvy_pen');
 
   String _platformVersion = 'Unknown';
@@ -46,7 +50,26 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     secureScreen();
+    _videoPlayerController = VideoPlayerController.network(videoURL)
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {
+          _videoPlayerController.play();
+        });
+      });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _videoPlayerController.dispose();
+  }
+
+  void seekByDuration(Duration duration) {
+    _videoPlayerController.pause();
+    _videoPlayerController.seekTo(duration);
+    _videoPlayerController.play();
   }
 
   @override
@@ -57,7 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             TextButton(
               child: Text("Get Platform Version"),
@@ -79,10 +103,38 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(_platformVersion),
             Text('status : $status'),
-            PenInput(
-              answerCount: 1,
-              onAnswerChanged: (newValue){}, //(newValue) => saveShortAnswer(newValue),
-              memberAnswer: "",
+            Center(
+              child: _videoPlayerController.value.isInitialized
+                  ? AspectRatio(
+                    aspectRatio: _videoPlayerController.value.aspectRatio,
+                    child: VideoPlayer(_videoPlayerController),
+                  )
+                  : Container(),
+            ),
+            Text("seekTo..... ", style: TextStyle(fontSize: 20),),
+            TextButton(
+              child: Text("0:30", style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline,),),
+              onPressed: () {
+                seekByDuration(const Duration(seconds: 30));
+              },
+            ),
+            TextButton(
+              child: Text("1:00", style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline,),),
+              onPressed: () {
+                seekByDuration(const Duration(minutes: 1));
+              },
+            ),
+            TextButton(
+              child: Text("1:30", style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline,),),
+              onPressed: () {
+                seekByDuration(const Duration(minutes: 1, seconds: 30));
+              },
+            ),
+            TextButton(
+              child: Text("2:00", style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline,),),
+              onPressed: () {
+                seekByDuration(const Duration(minutes: 2));
+              },
             ),
           ],
         ),
