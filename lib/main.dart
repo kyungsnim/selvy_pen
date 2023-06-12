@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:selvy_pen/pen_input.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,12 +24,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  static const MethodChannel _channel =
-  MethodChannel('com.seed.selvy_pen');
+  static const MethodChannel _channel = MethodChannel('com.seed.selvy_pen');
 
   String _platformVersion = 'Unknown';
   int status = 9999;
+
+  Future<void> secureScreen() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+
   Future<String> getPlatformVersion() async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
@@ -37,6 +41,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Future create() async {
     final status = await _channel.invokeMethod('create');
     return status;
+  }
+
+  @override
+  void initState() {
+    secureScreen();
+    super.initState();
   }
 
   @override
