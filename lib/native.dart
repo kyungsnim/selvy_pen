@@ -1,5 +1,4 @@
 import 'dart:ffi';
-import 'package:ffi/ffi.dart';
 
 final DynamicLibrary nativeLibrary = DynamicLibrary.open('libyourlibrary.so');
 
